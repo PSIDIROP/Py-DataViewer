@@ -23,7 +23,7 @@ class MyApp(QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.setWindowTitle("Data Viewer and Calculator")
+        self.setWindowTitle("Data Viewer and Analytics")
         self.setMinimumSize(600, 400)
         self.setStyleSheet("background-color: #e0f7fa;")
 
@@ -91,19 +91,19 @@ class MyApp(QMainWindow):
         self.current_row += 30
         QTimer.singleShot(30, self.insert_next_rows)
 
-    # widths data, from ColumnWidthThread actions
-    def apply_column_widths(self, widths):
-        for col, width in enumerate(widths):
-            self.table.setColumnWidth(col, width)
-        if self.progress_dialog:
-            self.progress_dialog.close()
-
     # after finish loading data to table, apply calculated (from Thread) widths
     def finish_loading(self):
         font_metrics = self.table.fontMetrics()
         self.width_thread = tu.ColumnWidthThread(self.df, font_metrics)
         self.width_thread.widths_computed.connect(self.apply_column_widths)
         self.width_thread.start()
+
+    # widths data, from ColumnWidthThread actions
+    def apply_column_widths(self, widths):
+        for col, width in enumerate(widths):
+            self.table.setColumnWidth(col, width)
+        if self.progress_dialog:
+            self.progress_dialog.close()
 
     # Error loading data from file
     def on_error(self, message):
